@@ -4,7 +4,7 @@ heroImage: /images/logo.jpg
 heroText: Hero 标题
 tagline: Hero 副标题
 actionText: 快速上手 →
-actionLink: /src/utils/introduce.md
+actionLink: /src/common/introduce.md
 features:
 - title: 标题
   details: 测试描述测试描述测试描述测试描述测试描述测试描述。

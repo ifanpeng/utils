@@ -28,6 +28,7 @@ mergeObject(obj1, obj2) // { a: [ { x: 2 }, { y: 4 }, { z: 3 } ], b: [ 1, 2, 3 ]
 
 ## 2. 对象深拷贝
 * 功能：复制一个对象
+> 不支持Map、Set、RegExp类型的数据
 
 ```js
 function deepClone (target, map=new Map()) {
