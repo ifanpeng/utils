@@ -28,32 +28,23 @@ mergeObject(obj1, obj2) // { a: [ { x: 2 }, { y: 4 }, { z: 3 } ], b: [ 1, 2, 3 ]
 
 ## 2. 对象深拷贝
 * 功能：复制一个对象
-> 不支持Map、Set、RegExp类型的数据
-
+> **不支持Map、Set、RegExp类型的数据**  
 ```js
-function deepClone (target, map=new Map()) {
-  if (target!==null && typeof target==='object') {
+function deepClone (target, map=new WeakMap()) {
+  if (target !== null && typeof target === 'object' ) {
     let cloneTarget = map.get(target)
     if (cloneTarget) {
       return cloneTarget
     }
-    if (target instanceof Array) {
-      cloneTarget = []
-      map.set(target, cloneTarget)
-      target.forEach((item, index) => {
-        cloneTarget[index] = deepClone(item, map)
-      })
-    } else {
-      cloneTarget = {}
-      map.set(target, cloneTarget)
-      Object.keys(target).forEach(key => {
-        cloneTarget[key] = deepClone(target[key], map)
-      })
+    cloneTarget = target instanceof Array ? [] : {}
+    map.set(target, cloneTarget)
+    for (const key in target) {
+      if (target.hasOwnProperty(key)) {
+        cloneTarget[key] = deepClone3(target[key], map)
+      }
     }
-
     return cloneTarget
   }
-
   return target
 }
 
@@ -70,66 +61,100 @@ console.log(obj2.c === obj1.c) // false
 ```
 
 
-## 3. 对象命名转换(小驼峰)
+## 3. 对象命名转换
+
+### 3.1 转驼峰形式
 * 功能：把对象key转小驼峰形式命名
 
 ```js
 function camelizeKey (key, separators = ['-', '_']) {
-  const out = [];
-  let i = 0;
-  const separatorsSet = new Set(separators);
+  const out = []
+  let i = 0
+  const separatorsSet = new Set(separators)
   while (i < key.length) {
     if (separatorsSet.has(key[i])) {
-      out.push(key[i + 1].toUpperCase());
-      i++;
+      out.push(key[i + 1].toUpperCase())
+      i++
     } else {
-      out.push(key[i]);
+      out.push(key[i])
     }
-    i++;
+    i++
   }
-  return out.join('');
+  return out.join('')
 }
 
-function camelize (obj) {
-  if (obj === null || obj === undefined) {
-    return null;
-  }
-  if (Array.isArray(obj)) {
-    return obj.map(item => camelize(item));
-  }
-  if (typeof obj === 'object') {
-    const out = {};
-    for (const key in obj) {
-      const v = obj[key];
-      out[camelizeKey(key)] = camelize(v);
+// 默认转小驼峰形式
+function camelize(obj, big = false) {
+    if (obj === null || obj === undefined) {
+        return null
     }
-    return out;
-  }
-  return obj;
+    const fn = (str) => str = big ?
+        str[0].toUpperCase() + str.slice(1) : str
+    if (Array.isArray(obj)) {
+        return obj.map(item => camelize(item, big))
+    }
+    if (typeof obj === 'object') {
+        const out = {};
+        for (const key in obj) {
+            const v = obj[key]
+            out[camelizeKey(fn(key))] = camelize(v, big)
+        }
+        return out
+    }
+    return obj
 }
 
 // 示例 
 const obj = {
-  id: 1,
-  intro_title: '介绍标题1',
-  intro_detail: '详细介绍1',
-  other: [
-    {
-      intro_title: '介绍标题2',
-      intro_detail: '详细介绍2',
-    }
-  ]
+  user_name: '张三',
+  pass_word: '123456'
 }
-
+// 转小驼峰
 camelize(obj) 
 //   ↓↓↓
 // {
-//   id: 1,
-//   introDetail: "详细介绍1",
-//   introTitle: "介绍标题1",
-//   other: [
-//     { introTitle: "介绍标题2", introDetail: "详细介绍2" }
-//   ]
+//   userName: '张三',
+//   passWord: '123456'
 // }
+// 转大驼峰
+camelize(obj, true)
+//   ↓↓↓
+// {
+//   UserName: '张三',
+//   PassWord: '123456'
+// }
+```
+
+### 3.2 转换成下划线命名
+
+```js
+/**
+ * @param key 对象字符串
+ * @param ignoreFirst 是否忽略第一个大写字母，如果忽略，会将其当成小写字母处理
+ */
+function underlizeKey(key, ignoreFirst = false) {
+    const out = []
+    let i = 0;
+    const lowerCasedStr = key.toString().toLowerCase()
+    while (i < key.length) {
+        if (key[i] !== lowerCasedStr[i]) {
+            if (!ignoreFirst || i !== 0) {
+                out.push('_')
+                out.push(lowerCasedStr[i])
+                i++
+                continue
+            }
+        }
+        out.push(key[i].toLocaleLowerCase())
+        i++
+    }
+    return out.join('')
+}
+
+// 示例
+underlizeKey('userName') // user_name
+underlizeKey('userName',true) // user_name
+underlizeKey('UserName',true) // user_name
+underlizeKey('UserName') // _user_name
 ```
 

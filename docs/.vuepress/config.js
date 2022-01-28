@@ -1,5 +1,5 @@
 module.exports = {
-    title: 'Hello VuePress',
+    title: 'Hello World',
     description: '测试一下是',
     themeConfig: {
         logo: '/images/logo.jpg',
@@ -29,6 +29,8 @@ module.exports = {
                 children: [
                     'src/utils/object.md',
                     'src/utils/cookie.md',
+                    'src/utils/url.md',
+                    'src/utils/date.md',
                 ]
             }
         ]
