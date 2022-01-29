@@ -1,52 +1,78 @@
 
-// const formatDate = (time, fmt = 'yyyy-MM-dd HH:mm:ss') => {
-//     const isNumber = val => typeof val === 'number' && val === val; 
-//     const formatNumber = (n, l) => {
-//         let s = isNumber(n) ? `${n}` : '0'
-//         while (s.length < l) {
-//             s = `0${s}`
-//         }
-//         return s
-//     }
-//     const t = new Date(time)
-//     const yyyy = formatNumber(t.getFullYear(), 4)
-//     const MM = (l = 2) => formatNumber(t.getMonth() + 1, l)
-//     const dd = (l = 2) => formatNumber(t.getDate(), l)
-//     const HH = (l = 2) => formatNumber(t.getHours(), l)
-//     const mm = (l = 2) => formatNumber(t.getMinutes(), l)
-//     const ss = (l = 2) => formatNumber(t.getSeconds(), l)
-//     return fmt
-//         .replace('yyyy', yyyy)
-//         .replace('MM', MM())
-//         .replace('dd', dd())
-//         .replace('HH', HH())
-//         .replace('mm', mm())
-//         .replace('ss', ss())
-//         .replace('M', MM(1))
-//         .replace('d', dd(1))
-//         .replace('H', HH(1))
-//         .replace('m', mm(1))
-//         .replace('s', ss(1))
-// }
+function extendStageParams(options){
+  let { startYear, startMonth, startDay, startTime, endTime } = options;
+  const data = [...options.data] // 浅克隆一份数据
+  const oDate = new Date();
+  const curTime = oDate.getTime();
+  const year = startYear || oDate.getFullYear();
+  const days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) {
+    days.splice(1, 1, 29);
+  }
+  const result = data.map((item) => {
+    if (startDay > days[startMonth - 1]) {
+      startDay = 1;
+      startMonth++;
+    }
+    if (startMonth > 12) {
+      startMonth = 1;
+      startYear++;
+    }
+    if(startDay<10){
+      startDay = `0${startDay}`
+    }
+    item.year = startYear;
+    item.month = startMonth;
+    item.day = parseInt(startDay);
+    item.beginTime = `${startYear}/${startMonth}/${startDay} ${startTime}`;
+    item.endTime = `${startYear}/${startMonth}/${startDay} ${endTime}`;
+    const bTime = new Date(item.beginTime).getTime();
+    const eTime = new Date(item.endTime).getTime();
+    if (curTime < bTime) {
+      item.current = false;
+      item.unlock = false;
+      item.expired = false;
+    }
+    if (curTime > bTime) {
+      item.current = false;
+      item.unlock = true;
+    }
+    if (curTime > bTime && curTime < eTime) {
+      item.current = true;
+      item.expired = false;
+    }
+    if (curTime > eTime) {
+      item.expired = true;
+    }
+    startDay++;
 
-// let ft = formatDate(1643367041000,'ss-yyyy-dd') // 2022-01-28 18:50:41
-// console.log(ft)
-
-const cnNumber = (n) => {
-  const cnNumbers = '零一二三四五六七八九十'
-  if (isNaN(n) || n < 0 || n > 99) {
-    return ''
-  }
-  if (n <= 10) {
-    return cnNumbers[n]
-  }
-  if (n < 20) {
-    return cnNumbers[10] + cnNumbers[n % 10]
-  }
-  if (n % 10 === 0) {
-    return cnNumbers[Math.floor(n / 10)] + cnNumbers[10]
-  }
-  return cnNumbers[Math.floor(n / 10)] + cnNumbers[10] + cnNumbers[n % 10]
+    return item;
+  });
+  return result;
 }
 
-console.log(cnNumber(100))
+const obj = [
+  {
+    id:1,
+    name:'初赛'
+  },
+  {
+    id:2,
+    name:'半决赛'
+  },
+  {
+    id:3,
+    name:'总决赛'
+  }
+]
+console.log(111,obj)
+
+const res = extendStageParams({
+  data: obj,
+  startYear: 2022,
+  startMonth : 1,
+  startDay:29,
+  startTime: '08:30:00',
+  endTime: '23:59:59',
+})
+console.log(res)

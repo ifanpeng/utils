@@ -27,6 +27,7 @@ module.exports = {
                 title: '使用',
                 collapsable: false,
                 children: [
+                    'src/utils/function.md',
                     'src/utils/object.md',
                     'src/utils/cookie.md',
                     'src/utils/url.md',
