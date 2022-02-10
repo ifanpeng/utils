@@ -1,23 +1,18 @@
 module.exports = {
-    title: 'Hello World',
-    description: '测试一下是',
+    title: '工具函数库',
+    description: '对常用的一些功能进行封装，方便使用',
     themeConfig: {
         logo: '/images/logo.jpg',
         nav: [
             { text: 'Home', link: '/' },
-            { text: 'Guide', link: '' },
+            { text: '接口管理平台', link: 'https://www.bbccdd.cn/' },
             { 
-                text: 'other', 
-                // ariaLabel: 'Language Menu',
+                text: '其他', 
                 items:[
                     { 
-                        text: 'zh',
-                        link: ''
-                    },
-                    { 
-                        text: 'en',
-                        link: ''
-                    },
+                        text: '添加QQ好友',
+                        link: 'tencent://Message/?Uin=1763535096'
+                    }
                 ]
             },
           ],
