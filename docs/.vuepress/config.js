@@ -2,7 +2,7 @@ module.exports = {
     title: '工具函数库',
     description: '对常用的一些功能进行封装，方便使用',
     themeConfig: {
-        logo: '/images/logo.jpg',
+        logo: '/images/logo.png',
         nav: [
             { text: 'Home', link: '/' },
             { text: '接口管理平台', link: 'https://www.bbccdd.cn/' },

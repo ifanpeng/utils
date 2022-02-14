@@ -1,6 +1,6 @@
 ---
 home: true
-heroImage: /images/logo.jpg
+heroImage: /images/logo.png
 heroText: 工具函数库
 # tagline: Hero 副标题
 actionText: 快速上手 →
